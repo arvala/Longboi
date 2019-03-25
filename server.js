@@ -19,6 +19,8 @@ app.get('/', (req, res) => {
 const config = require('./config.js');
 const region = config.region;
 const wow_server = config.wow_server; 
+// TODO: OAUTH implementation to refresh token
+// Currently a static token is used --> it deprecates in 24h
 const token = config.token; 
 const database_username = config.database_username; 
 console.log('token is '+region)
