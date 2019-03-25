@@ -37,7 +37,8 @@ app.post('/quotes', (req, res) => {
 
 //activates ah data dump when button in UI is pressed
 app.post('/ahdata', (req, res) => {
-    getAuctionDataFromBlizzardAndSaveItToMongo()
+	console.log('button pressed')
+    getAuctionDataFromBlizzardAPI();
     res.redirect('/')
 })
 
@@ -51,35 +52,40 @@ MongoClient.connect('mongodb+srv://'+database_username+':'+database_password+'@c
 })
 
 //app gets ah dumps with a 1800sec (30min) interval
-setInterval(getAuctionDataFromBlizzardAndSaveItToMongo, 1800000);
+setInterval(getAuctionDataFromBlizzardAPI, 1800000);
 
-function getAuctionDataFromBlizzardAndSaveItToMongo(){
+function getAuctionDataFromBlizzardAPI(){
 	const Http = new XMLHttpRequest();
 	const url='https://'+region+'.api.blizzard.com/wow/auction/data/'+wow_server+'?locale=en_US&access_token='+token;
 	Http.open("GET", url);
 	Http.send();
+	console.log('getting dataurl from '+url)
 	Http.onreadystatechange=function(){
 		if(this.readyState==4 && this.status==200){
 			console.log(Http.responseText)
 			let obj = JSON.parse(Http.responseText)
 			let dataurl = obj.files[0].url;
 			console.log(dataurl)
+			SaveAhDataToMongo(dataurl);
+		}
+		else(console.log(this.readystate +' '+ this.status))
+	}
+}
 
-			const Http2 = new XMLHttpRequest();
-			Http2.open("GET", dataurl);
-			Http2.send();
-			Http2.onreadystatechange=function(){
-				if(this.readyState==4 && this.status==200){
-					let obj2 = JSON.parse(Http2.responseText)
-					let ah_data = obj2.auctions;
-					//console.log(ah_data)
-					db.collection('bladefist_eu').insertMany(ah_data, (err, result) => {
-    					if (err) return console.log(err)
-  						console.log('saved ah dump to to database')
-    					//res.redirect('/')
-  					}) 
-				}
-			}
+function SaveAhDataToMongo(dataurl){
+	const Http2 = new XMLHttpRequest();
+	Http2.open("GET", dataurl);
+	Http2.send();
+	Http2.onreadystatechange=function(){
+		if(this.readyState==4 && this.status==200){
+			let obj2 = JSON.parse(Http2.responseText)
+			let ah_data = obj2.auctions;
+			//console.log(ah_data)
+			db.collection('bladefist_eu').insertMany(ah_data, (err, result) => {
+   				if (err) return console.log(err)
+  				console.log('saved ah dump to to database')
+    			//res.redirect('/')
+  			}) 
 		}
 	}
 }
