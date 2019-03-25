@@ -9,3 +9,66 @@ https://medium.freecodecamp.org/here-is-the-most-popular-ways-to-make-an-http-re
 managing configuration files:
 https://codeburst.io/node-js-best-practices-smarter-ways-to-manage-config-files-and-variables-893eef56cbef
 
+###########
+
+AH Data model:
+
+{
+    "_id":"5c97893d2d1dc6137a722f64",
+    "auc":785788630,
+    "item":114829,
+    "owner":"Téacup",
+    "ownerRealm":"Frostwhisper",
+    "bid":16814448,
+    "buyout":16814448,
+    "quantity":1,
+    "timeLeft":"LONG",
+    "rand":0,
+    "seed":0,
+    "context":13,
+    "bonusLists":[{
+        "bonusListId":189}]
+}
+
+###########
+
+auc - an incrementing 32-bit auction id (which does rollover so not unique over periods of weeks, but unique enough over periods of hours/days)
+
+item - the itemId of the item being auctioned
+
+owner - the name of the player who posted the auction
+
+ownerRealm - the realm of the player who posted the auction
+
+bid - the current auction bid
+
+buyout - the auction buyout
+
+quantity - how many of the item are in this auction
+
+timeLeft - how long this item has left (http://wow.gamepedia.com/Auction_House#Auction_lengths)
+
+rand - Rand (also known as suffixID) is the stat boost for the item (if the item has one). Example, -12 is "of the Boar" http://wow.gamepedia.com/ItemRandomSuffix
+
+seed - Seed from what I can gather is a unique value that may or may not contain creation information "Created by SlickWilly" that shows up in the tool tip
+
+context - how the item was obtained/created. The ones I have been able to identify are 3 (normal dungeon drop), 4 (LFR drop), 5 (Heroic drop), 6 (Mythic drop), 13 (created by crafting). I believe 1 may have something to do with a quest reward or opening of a bag from a quest reward.
+
+
+{
+    "_id":"5c97893d2d1dc6137a722f64",
+    "auc":785788630,
+    "item":114829,
+    "owner":"Téacup",
+    "ownerRealm":"Frostwhisper",
+    "bid":16814448,
+    "buyout":16814448,
+    "quantity":1,
+    "timeLeft":"LONG",
+    "rand":0,
+    "seed":0,
+    "context":13,
+    "bonusLists":[{
+        "bonusListId":189}]
+}
+
