@@ -27,7 +27,6 @@ console.log('token is '+region)
 const database_password = config.database_password; 
 const node_port = config.node_port;
 
-
 // This section responds to the buttons in the frontend to save quotes
 app.post('/quotes', (req, res) => {
   db.collection('quotes').save(req.body, (err, result) => {
@@ -54,7 +53,7 @@ MongoClient.connect('mongodb+srv://'+database_username+':'+database_password+'@c
 })
 
 //app gets ah dumps with a 1800sec (30min) interval
-setInterval(getAuctionDataFromBlizzardAPI, 1800000);
+//setInterval(getAuctionDataFromBlizzardAPI, 1800000);
 
 function getAuctionDataFromBlizzardAPI(){
 	const Http = new XMLHttpRequest();
@@ -82,6 +81,25 @@ function SaveAhDataToMongo(dataurl){
 		if(this.readyState==4 && this.status==200){
 			let obj2 = JSON.parse(Http2.responseText)
 			let ah_data = obj2.auctions;
+			//adding timestamps to auction objects
+			for (let auction of ah_data) {
+				var today = new Date();
+				var month = today.getMonth();
+				if (month < 10) {
+					month = '0' + month;
+				}
+				var day = today.getDate();
+				if (day < 10) {
+					day = '0' + day;
+				}
+				var weekday = today.getDay();
+				var date = today.getFullYear().toString()+month+day
+				var hour = today.getHours();
+    			auction.timestampOfDump = today;
+    			auction.dateOfDump = date;
+    			auction.weekdayOfDump = weekday;
+    			auction.hourOfDump = hour;
+			}
 			//console.log(ah_data)
 			db.collection('bladefist_eu').insertMany(ah_data, (err, result) => {
    				if (err) return console.log(err)
@@ -91,3 +109,4 @@ function SaveAhDataToMongo(dataurl){
 		}
 	}
 }
+
