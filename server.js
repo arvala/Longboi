@@ -83,22 +83,7 @@ function SaveAhDataToMongo(dataurl){
 			let ah_data = obj2.auctions;
 			//adding timestamps to auction objects
 			for (let auction of ah_data) {
-				var today = new Date();
-				var month = today.getMonth();
-				if (month < 10) {
-					month = '0' + month;
-				}
-				var day = today.getDate();
-				if (day < 10) {
-					day = '0' + day;
-				}
-				var weekday = today.getDay();
-				var date = today.getFullYear().toString()+month+day
-				var hour = today.getHours();
-    			auction.timestampOfDump = today;
-    			auction.dateOfDump = date;
-    			auction.weekdayOfDump = weekday;
-    			auction.hourOfDump = hour;
+				addTimestampsToAuction(auction)
 			}
 			//console.log(ah_data)
 			db.collection('bladefist_eu').insertMany(ah_data, (err, result) => {
@@ -110,3 +95,21 @@ function SaveAhDataToMongo(dataurl){
 	}
 }
 
+function addTimestampsToAuction(auction){
+	var today = new Date();
+	var month = today.getMonth();
+	if (month < 10) {
+		month = '0' + month;
+	}
+	var day = today.getDate();
+	if (day < 10) {
+		day = '0' + day;
+	}
+	var weekday = today.getDay();
+	var date = today.getFullYear().toString()+month+day
+	var hour = today.getHours();
+    auction.timestampOfDump = today;
+    auction.dateOfDump = date;
+    auction.weekdayOfDump = weekday;
+    auction.hourOfDump = hour;
+}
