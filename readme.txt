@@ -72,3 +72,34 @@ context - how the item was obtained/created. The ones I have been able to identi
         "bonusListId":189}]
 }
 
+
+############
+
+
+
+1. Get all auctions with same item ID {item: 152512} //monelite ore
+2. Amount of auctions of said item 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

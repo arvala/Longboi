@@ -46,7 +46,8 @@ app.post('/ahdata', (req, res) => {
 //activates ah data dump when button in UI is pressed
 app.post('/query', (req, res) => {
 	console.log('queried database')
-    queryDbForStuff();
+    queryDbForDocumentCount(queryAmountOfMoneliteOreAuctions);
+    queryDbForTotalItemCount(queryTotalAMountOfMoneliteOreOnSale);
     res.redirect('/')
 })
 
@@ -121,10 +122,19 @@ function addTimestampsToAuction(auction){
     auction.hourOfDump = hour;
 }
 
-function queryDbForStuff(query){
-	db.collection('bladefist_eu').countDocuments((query, (err, result) => {
+function queryDbForDocumentCount(query){
+	db.collection('bladefist_eu').countDocuments(query, (err, result) => {
 	if (err) return console.log(err)
 	console.log(result)
     //res.redirect('/')
   	}) 
 }
+
+function queryDbForTotalItemCount(query){
+	db.collection('bladefist_eu').aggregate(query).toArray().then(results => {
+  		console.log(results)
+	})
+}
+var queryAmountOfMoneliteOreAuctions = {item: 152512};
+var queryTotalAMountOfMoneliteOreOnSale = [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
+
