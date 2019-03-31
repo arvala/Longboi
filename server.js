@@ -48,6 +48,7 @@ app.post('/query', (req, res) => {
 	console.log('queried database')
     queryDbForDocumentCount(queryAmountOfMoneliteOreAuctions);
     queryDbForTotalItemCount(queryTotalAMountOfMoneliteOreOnSale);
+    queryDbForTotalItemCount(queryAuctionsOfMOneliteOreGroupedBySeller);
     res.redirect('/')
 })
 
@@ -135,6 +136,8 @@ function queryDbForTotalItemCount(query){
   		console.log(results)
 	})
 }
+
 var queryAmountOfMoneliteOreAuctions = {item: 152512};
-var queryTotalAMountOfMoneliteOreOnSale = [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
+var queryTotalAMountOfMoneliteOreOnSale =       [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
+var queryAuctionsOfMOneliteOreGroupedBySeller = [{$match: {item: 152512}}, {$group:{_id: { seller: "$owner" , stacksize: "$quantity"}, count: { $sum: 1 }}}]
 
