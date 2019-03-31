@@ -80,7 +80,7 @@ context - how the item was obtained/created. The ones I have been able to identi
 1. Get all auctions with same item ID {item: 152512} //monelite ore
 2. Amount of auctions of said item 
 3. amount of total items on sale (monelite ore)
-4. Monelite ore auctions grouped by seller and stacksize and price
+4. Monelite ore auctions grouped by seller and stacksize and price (per item), sorted by price
 
 
 

@@ -139,5 +139,5 @@ function queryDbForTotalItemCount(query){
 
 var queryAmountOfMoneliteOreAuctions = {item: 152512};
 var queryTotalAMountOfMoneliteOreOnSale =       [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
-var queryAuctionsOfMOneliteOreGroupedBySeller = [{$match: {item: 152512}}, {$group:{_id: { seller: "$owner" , stacksize: "$quantity"}, count: { $sum: 1 }}}]
+var queryAuctionsOfMOneliteOreGroupedBySeller = [{$match: {item: 152512}}, {$group:{_id: { seller: "$owner" , stacksize: "$quantity", price: {$divide: ["$buyout", "$quantity"]}, count: { $sum: 1 }}}}, {$sort: {'_id.price': 1}}]
 
