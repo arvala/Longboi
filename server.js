@@ -43,6 +43,13 @@ app.post('/ahdata', (req, res) => {
     res.redirect('/')
 })
 
+//activates ah data dump when button in UI is pressed
+app.post('/query', (req, res) => {
+	console.log('queried database')
+    queryDbForStuff();
+    res.redirect('/')
+})
+
 //connects to the MongoDB database and listens to port 3000 if the connection is established
 MongoClient.connect('mongodb+srv://'+database_username+':'+database_password+'@cluster0-cnr8x.mongodb.net/test?retryWrites=true', (err, client) => {
   if (err) return console.log(err)
@@ -112,4 +119,12 @@ function addTimestampsToAuction(auction){
     auction.dateOfDump = date;
     auction.weekdayOfDump = weekday;
     auction.hourOfDump = hour;
+}
+
+function queryDbForStuff(query){
+	db.collection('bladefist_eu').countDocuments((query, (err, result) => {
+	if (err) return console.log(err)
+	console.log(result)
+    //res.redirect('/')
+  	}) 
 }
