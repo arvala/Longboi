@@ -11,7 +11,7 @@ https://codeburst.io/node-js-best-practices-smarter-ways-to-manage-config-files-
 
 ###########
 
-AH Data model:
+AH Dump Data model:
 
 {
     "_id":"5c97893d2d1dc6137a722f64",
@@ -83,6 +83,27 @@ context - how the item was obtained/created. The ones I have been able to identi
 4. Monelite ore auctions grouped by seller and stacksize and price (per item), sorted by price
 
 
+#######
+PROSESSED_DATA_COLLECTION
+
+batch: running integer
+
+auc: bladefist_eu.auc
+item: bladefist_eu.item
+owner: bladefist_eu.owner
+bid: bladefist_eu.bid
+buyout: bladefist_eu.buyout
+quantity: bladefist_eu.quantity
+timeleft: bladefist_eu.timeLeft
+
+TimeOfDataDump: bladefist_eu.timestamp
+isNewAuction: (boolean)
+	if(previous_batch.includes(this.auc)) then false
+	else true
+TBL: Time being listed
+	if (this.isNewAuction == false) then TBL=previous_batch.TBL++
+	else TBL = 1
+Prediction: Hours left until expiration
 
 
 
