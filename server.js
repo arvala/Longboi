@@ -103,6 +103,14 @@ function SaveAhDataToMongo(dataurl){
 		}
 	}
 }
+//saves processed ah data to separate collection
+function saveProcessedAhDataToMongo(processed_data){
+	db.collection('processed_bladefist_eu').insertMany(processed_data, (err, result) => {
+   		if (err) return console.log(err)
+  		console.log('saved ah dump to to database')
+    	//res.redirect('/')
+  	}) 
+}
 
 function addTimestampsToAuction(auction){
 	var today = new Date();
@@ -122,6 +130,29 @@ function addTimestampsToAuction(auction){
     auction.weekdayOfDump = weekday;
     auction.hourOfDump = hour;
 }
+
+function addBatchToAuction(auction){
+	//TODO
+	//running integer
+}
+
+function addIsNewAuction(auction){
+	//TODO
+	//if(previous_batch.includes(this.auc)) then false
+	//else true
+}
+
+function addTimeBeingListed(auction){
+	//TODO
+	//if (this.isNewAuction == false) then TBL=previous_batch.TBL++
+	//else TBL = 1
+}
+
+function addPredictionForTimeLeft(auction){
+	//TODO
+	//hours left until expiration
+}
+
 
 function queryDbForDocumentCount(query){
 	db.collection('bladefist_eu').countDocuments(query, (err, result) => {
