@@ -46,9 +46,10 @@ app.post('/ahdata', (req, res) => {
 //activates ah data dump when button in UI is pressed
 app.post('/query', (req, res) => {
 	console.log('queried database')
-    queryDbForDocumentCount(queryAmountOfMoneliteOreAuctions);
-    queryDbForTotalItemCount(queryTotalAMountOfMoneliteOreOnSale);
-    queryDbForTotalItemCount(queryAuctionsOfMOneliteOreGroupedBySeller);
+    //queryDbForDocumentCount(queryAmountOfMoneliteOreAuctions);
+    //queryDbForTotalItemCount(queryTotalAMountOfMoneliteOreOnSale);
+    //queryDbForTotalItemCount(queryAuctionsOfMOneliteOreGroupedBySeller);
+    queryDb(queryMoneliteOreAuctionsOfPreviousDump);
     res.redirect('/')
 })
 
@@ -105,6 +106,11 @@ function SaveAhDataToMongo(dataurl){
 }
 //saves processed ah data to separate collection
 function saveProcessedAhDataToMongo(processed_data){
+	//increase batchId for current batch
+	batchId++
+	for (let auction of processed_data) {
+		addBatchIdToAuction(auction)
+	}
 	db.collection('processed_bladefist_eu').insertMany(processed_data, (err, result) => {
    		if (err) return console.log(err)
   		console.log('saved ah dump to to database')
@@ -131,9 +137,8 @@ function addTimestampsToAuction(auction){
     auction.hourOfDump = hour;
 }
 
-function addBatchToAuction(auction){
-	//TODO
-	//running integer
+function addBatchIdToAuction(auction){
+    auction.batchId = batchId;
 }
 
 function addIsNewAuction(auction){
@@ -150,7 +155,7 @@ function addTimeBeingListed(auction){
 
 function addPredictionForTimeLeft(auction){
 	//TODO
-	//hours left until expiration
+	//hours left until expiration 
 }
 
 
@@ -168,7 +173,38 @@ function queryDbForTotalItemCount(query){
 	})
 }
 
-var queryAmountOfMoneliteOreAuctions = {item: 152512};
-var queryTotalAMountOfMoneliteOreOnSale =       [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
+function queryDb(query){
+	db.collection('bladefist_eu').find(query).project(projection).toArray((err, result) => {
+	//if (err) return console.log(err)
+	console.log(result)
+	console.log('saving processed data to DB')
+	saveProcessedAhDataToMongo(result);
+  	}) 
+}
+
+function calculateDateOfPreviousDump(){
+	//TODO
+	//determines the date (yyyymmdd) of previous dump
+	//current data in db includes these values
+	return "20190228"
+}
+
+function calculateHourOfPreviousDump(){
+	//TODO
+	//determines the hour (hh) of previous dump
+	//current data in db includes these values
+	return 16;
+}
+
+var dateOfPreviousDump = calculateDateOfPreviousDump();
+var hourOfPreviousDump = calculateHourOfPreviousDump();
+var batchId = 1;
+
+var queryAmountOfMoneliteOreAuctions =  {item: 152512};
+var queryMoneliteOreAuctionsOfPreviousDump = {item: 152512, dateOfDump: dateOfPreviousDump,  hourOfDump: hourOfPreviousDump};
+var projection = {_id: 0, rand: 0, seed: 0, context: 0, ownerRealm: 0}
+var queryTotalAMountOfMoneliteOreOnSale = [{$match: {item: 152512}}, {$group:{_id: { item: "$item" }, totalAmount: { $sum: "$quantity" }, count: { $sum: 1 }}}]
 var queryAuctionsOfMOneliteOreGroupedBySeller = [{$match: {item: 152512}}, {$group:{_id: { seller: "$owner" , stacksize: "$quantity", price: {$divide: ["$buyout", "$quantity"]}, count: { $sum: 1 }}}}, {$sort: {'_id.price': 1}}]
+
+
 
