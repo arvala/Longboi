@@ -110,6 +110,7 @@ function saveProcessedAhDataToMongo(processed_data){
 	batchId++
 	for (let auction of processed_data) {
 		addBatchIdToAuction(auction)
+		addIsNewAuction(auction)
 	}
 	db.collection('processed_bladefist_eu').insertMany(processed_data, (err, result) => {
    		if (err) return console.log(err)
@@ -145,6 +146,17 @@ function addIsNewAuction(auction){
 	//TODO
 	//if(previous_batch.includes(this.auc)) then false
 	//else true
+	lastBatchId=auction.batchId-1;
+	db.collection('processed_bladefist_eu').find({auc: auction.auc, batchId: lastBatchId}).count(function (err, count) {
+		if(count>0){
+			auction.isNewAuction = false;
+			console.log('auction.isNewAuction '+ auction.isNewAuction)
+		}
+		else{
+			auction.isNewAuction = true;
+			console.log('auction.isNewAuction '+ auction.isNewAuction)
+		}
+	})
 }
 
 function addTimeBeingListed(auction){
